@@ -6,8 +6,18 @@
         <link rel="stylesheet" href="stylesheet.css">
     </head>
     <body>
+            <div id="myNav" class="overlay">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <div class="overlay-content">
+                    <!-- <a href="#">Web Programming HW1</a> -->
+                </div>
+            </div>
+
+
         <div id="myDIV" class="header">
-            <h2>Youtube | 重複播放器</h2>
+            <h2>Youtube | 重複播放器</h2> 
+            <div display="inline" ><img src="img/ha.gif" alt="dlrb" onclick="dlrb()" id="dlrbbb"></div>
+
             <p>輸入網址以新增一首常聽的歌 👉 被選取的歌曲會輪流播放 👉 按下叉叉可以刪除</p>
 
             <div id="player"></div>
