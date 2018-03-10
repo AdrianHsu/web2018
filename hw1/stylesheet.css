@@ -1,0 +1,104 @@
+* {
+    /*當你設定一個元素樣式為 box-sizing: border-box;，這個元素的內距和邊框將不會增加元素本身的寬度。*/
+    box-sizing: border-box;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    cursor: pointer; /* 改變滑鼠形狀 */
+    position: relative;
+    padding: 12px 8px 12px 40px;
+    background: #eee;
+    font-size: 18px;
+    transition: 0.2s; /*變色的速度*/
+
+    /*各種不能讓 user 點下去*/
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+/*下面的 addBtn 的 hover 也是同樣道理*/
+ul li:hover {
+    background: #ddd;
+}
+
+ul li:nth-child(odd) {
+    background: #f9f9f9;
+}
+
+
+ul li.checked {
+    background: #888;
+    color: #fff;
+    text-decoration: line-through; /*刪除線*/
+}
+
+ul li.checked::before {
+    content: ''; /*印什麼字在勾勾上面*/
+    position: absolute;
+    border-color: #fff;
+    border-style: solid;
+    border-width: 0 2px 2px 0;
+    top: 12px;
+    left: 16px;
+    transform: rotate(45deg); /*兩條斜線轉 45 度組成一個勾勾*/
+    height: 15px;
+    width: 5px;
+}
+
+/*close button*/
+.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+}
+
+.close:hover {
+    background-color: #f44336;
+    color: white;
+}
+
+.header {
+    background-color: #f14336;
+    padding: 30px 40px;
+    color: white;
+    font-size: 40px;
+    text-align: center;
+}
+
+.header:after {
+    content: "";
+    display: table; /*???*/
+    clear: both;
+}
+
+input {
+    border: none;
+    width: 75%;
+    padding: 10px;
+    float: left;
+    font-size: 16px;
+}
+
+.addBtn {
+    padding: 8.5px;
+    width: 25%;
+    background: #d9d9d9;
+    color: #555;
+    float: left;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.addBtn:hover {
+    background-color: #bbb;
+}
+

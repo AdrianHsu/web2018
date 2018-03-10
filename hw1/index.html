@@ -2,19 +2,27 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>dlrb</title>
-        <link rel=“stylesheet” type=“text/css” href=“styles/stylesheet.css”>
+        <title>Youtube | 重複播放器</title>
+        <link rel="stylesheet" href="stylesheet.css">
     </head>
     <body>
-        <p>dlrb</p>
-        <dl>
-            <dt>test</dt>
-                <dd>t1111</dd>
-                <dd>t2222</dd>
-            <dt>test2</dt>
-        </dl>
-        <hr>
-        <p>dlrb</p>
+        <div id="myDIV" class="header">
+            <h2>Youtube | 重複播放器</h2>
+            <p>輸入網址以新增一首常聽的歌 👉 被選取的歌曲會輪流播放 👉 按下叉叉可以刪除</p>
 
+
+            <div id="player"></div>
+            <input type="text" id="myInput" placeholder="歌曲網址...">
+            
+            <span onclick="newElement()" class="addBtn">加入</span>
+        </div>
+        <ul id="myUL">
+            <li>j2311FZWoFQ|草東沒有派對 No Party For Cao Dong - 山海 Wayfarer [Official Music Video]</li>
+            <li class="checked">HqmpIQ9l-uA|草東沒有派對 No Party For Cao Dong - 大風吹 Simon Says【Official Music Video】</li>
+            <li>HqmpIQ9l-uA|徐佳瑩 LaLa【現在不跳舞要幹嘛 Just Dance】Official Music Video</li>
+            <li>aaaa</li>
+            <li>bbb</li>
+        </ul>
+        <script src='main.js'></script>   
     </body>
 </html>
