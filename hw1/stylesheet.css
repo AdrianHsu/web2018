@@ -85,7 +85,9 @@ input {
     float: left;
     font-size: 16px;
 }
-
+p {
+    font-size: 30px;
+}
 .addBtn {
     padding: 8.5px;
     width: 25%;
