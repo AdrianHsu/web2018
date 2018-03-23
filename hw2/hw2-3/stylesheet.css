@@ -179,3 +179,11 @@ input {
   background-color:grey;
   color: white;
 }
+#globalnotdone {
+  float: left;
+  width: 100%;
+}
+#globaldone {
+  float: left;
+  width: 100%;
+}
