@@ -1,5 +1,5 @@
 .TodoList {
-  display: inline-block;
+  display: inline-table;
   width: 400px;
   height: 300px;
   margin: 1em;
@@ -104,9 +104,19 @@ ul li.checked::before {
 /* Style the input */
 input {
   border: none;
+  background-color: white;
+  padding: 10px;
+  width: 75%;
+  float: left;
+  font-size: 16px;
+}
+
+#listNameInput {
+  border: none;
   background-color: papayawhip;
   width: 75%;
   padding: 10px;
+  margin-left: 20px;
   float: left;
   font-size: 16px;
 }
@@ -144,4 +154,28 @@ input {
 
 #createBtn:hover {
   background-color: #bbb;
+}
+
+/* Style the close button */
+.closeList {
+  right: 0;
+  top: 0;
+  float: left;
+  padding: 5px 5px 5px 5px;
+}
+
+.closeList:hover {
+  background-color:grey;
+  color: white;
+}
+.modify {
+  float: right;
+  right: 0;
+  top: 0;
+  padding: 5px 5px 5px 5px;
+}
+
+.modify:hover {
+  background-color:grey;
+  color: white;
 }
