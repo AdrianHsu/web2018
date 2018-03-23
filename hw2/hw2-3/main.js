@@ -90,6 +90,24 @@ class TodoList {
   }
 
 }
+// init
+list_total_num = 1;
+globalLists.push(new TodoList("list_1", "list_title_1"));
 
-globalLists.push(new TodoList("list1", "adrian1"));
-globalLists.push(new TodoList("list2", "adrian2"));
+var btn = document.getElementById("createBtn");
+btn.addEventListener('click', function(ev) {
+
+  var div = document.getElementById("list_1");
+  var listName = document.getElementById("listNameInput").value;
+
+  clone = div.cloneNode(true); // true means clone all childNodes and all event handlers
+  clone.id = "list_" + (++list_total_num);
+  document.body.appendChild(clone);
+  if(listName == ''){
+    globalLists.push(new TodoList(clone.id, "list_title_" + list_total_num));
+  } else {
+    globalLists.push(new TodoList(clone.id, listName));
+  }
+  document.getElementById("listNameInput").value = "";
+}, false);
+
