@@ -452,3 +452,215 @@ export default wrapper;
 
 
 
+# state with lifecycle methods
+
+
+
+```react
+// willmount()
+this.setState({m: 2})
+// render()
+{this.state.val * this.state.m}
+// didmount()
+console.log(ReactDOM.findDOMNode(this))
+this.inc = setInterval(this.update, 500);
+// 2, 4, 6, 8, 10, 12....
+// willunmount()
+clearInterval(this.inc)
+```
+
+
+
+# 當收到 props 時，控制更新 component  
+
+
+
+```react
+class App extends React.Component {
+    constructor() {
+        super();
+        this.state = {incre: false}
+    }
+    update() {
+        ReactDOM.render(
+        	<App val={this.props.val + 1}/>, 
+            document.getElementById('root'))
+        )
+    }
+    componentWillReceiveProps(nextProps) {
+        this.setState({incre: nextProps.val > this.props.val})
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return nextProps.val % 5 === 0;
+    }
+    render() {
+        console.log(this.state.incre); //true or false
+        return (
+        	<button onClick={this.update.bind(this)}>
+            	{this.props.val}
+            </button>
+        )
+    }
+    componentDidUpdate(prevProps, prevState) {
+        console.log('preProps: ${preProps.val}');
+    }
+    
+}
+App.defaultProps = {val: 0}
+```
+
+
+
+# 用 map 來把 arrays 轉成可 render 形式 
+
+關鍵字搜尋（ filter）
+
+```react
+class App extends React.Component {
+    constructor() { 
+        super();
+        this.state = {items: []} // 1.
+    }
+    componentWillMount() { //2.
+        fetch( 'https://swapi.co/api/people/?format=json')
+        .then(response => response.json())
+        .then(({results:items}) => this.setState({items}))
+    }
+    render() {
+        let items = this.state.items
+        return (
+        	<div>// 3.
+                {items.map(item => <Person key={item.name} person={item}/>)}
+            </div>
+        )
+    }
+}
+
+// 4. 
+const Person = (props) => <h4>{props.person.name}</h4>
+```
+
+
+
+加上 filter 機制之後：
+
+```react
+class App extends React.Component {
+    constructor() { 
+        super();
+        this.state = {items: []} // 1.
+    }
+    componentWillMount() { //2.
+        fetch( 'https://swapi.co/api/people/?format=json')
+        .then(response => response.json())
+        .then(({results:items}) => this.setState({items}))
+    }
+    filter(e) { // 6. 可做出 search 功能，輸入 L 查到包含 L 的字
+        this.setState({filter: e.target.value})
+    }
+    render() {
+        let items = this.state.items
+        if(this.state.filter) { // 5.
+            items = items.filter( item =>
+                item.name.toLowerCase() // includes 包含的
+                .includes(this.state.filter.toLowerCase() ))
+        }
+        return (
+        	<div>
+                // 7.
+                <input type="text" onChange={this.filter.bind(this)}/>
+                // 3.
+                {items.map(item => <Person key={item.name} person={item}/>)}
+            </div>
+        )
+    }
+}
+
+// 4. 
+const Person = (props) => <h4>{props.person.name}</h4>
+```
+
+##### 
+
+# Higher order components
+
+
+
+```react
+class App extends React.Component {
+    render() {
+        return (
+        	<div>
+            	<MyButton>button</MyButton>
+                <MyLabel>label</MyLabel>
+            </div>
+        )
+    }
+}
+
+const MyButton = (props) => <button>{props.children}</button>;
+const Label extends React.Component {
+    render() {
+        return (
+        	<label>{this.props.children}</label>
+        )
+    }
+}
+```
+
+
+
+變成這樣
+
+
+
+```react
+// HOC: higher order component
+const HOC = (InnerComponent) => class extends React.Component {
+    constructor() {
+        super();
+        this.state = {count:0}
+    }
+    update() {
+        this.setState({count: this.state.count + 1})
+    }
+    componentWillMound() {
+        console.log('will mount');
+    }
+    render() {
+        return (
+            <InnerComponent 
+                {...this.props} // 啥意思？
+                {...this.state}
+                update = {this.update.bind(this)}/>
+        )
+    }
+}
+
+class App extends React.Component {
+    render() {
+        return (
+        	<div>
+            	<Button>button</Button>
+                <LabelHOC>label</LabelHOC>
+            </div>
+        )
+    }
+}
+
+const Button = HOC((props) => <button onClick={props.update}>{props.children} - {props.count}</button>);
+                   
+class Label extends React.Component {
+    componentWillMount() {
+    	console.log('label will mount');
+	}
+    render() {
+        return (
+        	<label onMouseMove={this.props.update}>{this.props.children} - {this.props.count}</label>
+        )
+    }
+}
+
+const LabelHOC = HOC(Label)
+```
+
