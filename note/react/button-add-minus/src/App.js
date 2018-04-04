@@ -1,10 +1,19 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import React, { Component } from "react";
+
+class App extends Component {
+  render() {
+    return (
+      <div className="App">
+        <Counter val={this.props.val} />
+      </div>
+    );
+  }
+}
 
 class Counter extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: 100 };
+    this.state = { value: this.props.val };
   }
   incNum() {
     this.setState({ value: this.state.value + 1 });
@@ -23,4 +32,4 @@ class Counter extends React.Component {
   }
 }
 
-ReactDOM.render(<Counter />, document.getElementById("root"));
+export default App;
