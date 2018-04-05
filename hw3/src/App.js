@@ -9,26 +9,41 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      totalAlive: 3,
+      totalAlive: 6,
       totalDone: 0
     };
   }
+  summaryCallback = (tmp, num) => {
+    this.setState({
+      totalDone: this.state.totalDone + num,
+      totalAlive: this.state.totalAlive + tmp
+    });
+  };
   render() {
     return (
       <div className="App container-fluid">
-        <GlobalHeader />
+        <GlobalHeader
+          totalAlive={this.state.totalAlive}
+          totalDone={this.state.totalDone}
+        />
         <InputBoxCard />
-        <TodoBoard />
+        <TodoBoard parentCallback={this.summaryCallback} />
       </div>
     );
   }
 }
 class TodoBoard extends Component {
+  summaryCallback = (tmp, num) => {
+    this.props.parentCallback(tmp, num);
+  };
+
   render() {
     // 原本想使用 card-group 或是 card-deck，但不支援 rwd 所以改用 row
     return (
       <div className="row justify-content-center">
-        <TodoCard />
+        <TodoCard parentCallback={this.summaryCallback} />
+        <TodoCard parentCallback={this.summaryCallback} />
+
         {/* <TodoCard />
         <TodoCard />
         <TodoCard />
@@ -49,10 +64,14 @@ class GlobalHeader extends Component {
 
         <div className="media-body">
           <button type="button" className="btn btn-success mt-4 float-right">
-            done <span className="badge badge-light">4</span>
+            done{" "}
+            <span className="badge badge-light">{this.props.totalDone}</span>
           </button>
           <button type="button" className="btn btn-secondary mt-4 float-right">
-            ongoing <span className="badge badge-light">4</span>
+            ongoing{" "}
+            <span className="badge badge-light">
+              {this.props.totalAlive - this.props.totalDone}
+            </span>
           </button>
         </div>
       </div>
@@ -87,9 +106,9 @@ class TodoCard extends Component {
       done: 0,
       keyNum: 3,
       todoItems: [
-        { key: "id" + 1, checked: false, msg: "dinner" },
-        { key: "id" + 2, checked: false, msg: "jogging" },
-        { key: "id" + 3, checked: false, msg: "sleep" }
+        { key: "id" + 1, checked: -1, msg: "dinner" },
+        { key: "id" + 2, checked: -1, msg: "jogging" },
+        { key: "id" + 3, checked: -1, msg: "sleep" }
       ]
     };
   }
@@ -106,22 +125,18 @@ class TodoCard extends Component {
     });
     todoItems.push({
       key: "id" + this.state.keyNum,
-      checked: false,
+      checked: -1,
       msg: name
     });
     this.setState({ todoItems });
+    this.props.parentCallback(1, 0);
   };
 
-  summaryCallback = bool => {
-    if (bool) {
-      this.setState({
-        done: this.state.done + 1
-      });
-    } else {
-      this.setState({
-        done: this.state.done - 1
-      });
-    }
+  summaryCallback = (tmp, num) => {
+    this.setState({
+      done: this.state.done + num
+    });
+    this.props.parentCallback(tmp, num);
   };
 
   render() {
@@ -146,7 +161,6 @@ class TodoCardHeader extends Component {
   submitCallback = e => {
     e.preventDefault();
     const name = this.refs.inputItem.value;
-    // console.log(name);
     this.props.parentCallback(name);
     e.target.reset();
   };
@@ -200,8 +214,8 @@ class TodoCardHeader extends Component {
   }
 }
 class TodoListBody extends Component {
-  summaryCallback = bool => {
-    this.props.parentCallback(bool);
+  summaryCallback = (tmp, num) => {
+    this.props.parentCallback(tmp, num);
   };
 
   render() {
@@ -231,9 +245,9 @@ class TodoItem extends Component {
     };
   }
   update = e => {
-    this.setState({ checked: !this.state.checked }, () => {
+    this.setState({ checked: this.state.checked === 1 ? -1 : 1 }, () => {
       var c = this.state.checked;
-      if (c) {
+      if (c === 1) {
         this.setState({
           myclass: "list-group-item list-group-item-success",
           text: <s>{this.props.children}</s>
@@ -244,7 +258,7 @@ class TodoItem extends Component {
           text: this.props.children
         });
       }
-      this.props.parentCallback(c);
+      this.props.parentCallback(0, c);
     });
   };
 
