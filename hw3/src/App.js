@@ -59,7 +59,7 @@ class InputBoxCard extends Component {
         <input
           type="text"
           className="form-control"
-          placeholder="Recipient's username"
+          placeholder="new list's title..."
         />
         <div className="input-group-append">
           <button className="btn btn-outline-secondary" type="button">
@@ -75,35 +75,55 @@ class TodoCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newTitle: null
+      newTitle: null,
+      undone: 3,
+      done: 0,
+      keyNum: 3,
+      todoItems: [
+        { key: "id" + 1, checked: false, msg: "dinner" },
+        { key: "id" + 2, checked: false, msg: "jogging" },
+        { key: "id" + 3, checked: false, msg: "sleep" }
+      ]
     };
   }
 
-  updateCallback = name => {
+  addItemCallback = name => {
     console.log(name);
+    const { todoItems } = this.state;
+
     this.setState({ newTitle: name });
+    this.setState({ undone: this.state.undone + 1 });
+    this.setState({ todoItems });
+    this.setState({ keyNum: this.state.keyNum + 1 });
+    todoItems.push({
+      key: "id" + this.state.keyNum,
+      checked: false,
+      msg: name
+    });
   };
 
   render() {
     return (
       <div className="col-auto mb-3">
         <div className="card" style={{ width: 37 + "rem" }}>
-          <TodoCardHeader parentCallback={this.updateCallback} />
-          <TodoListBody />
+          <TodoCardHeader
+            undone={this.state.undone}
+            done={this.state.done}
+            parentCallback={this.addItemCallback}
+          />
+          <TodoListBody todoItems={this.state.todoItems} />
         </div>
       </div>
     );
   }
 }
 class TodoCardHeader extends Component {
-  constructor(props) {
-    super(props);
-  }
   submitCallback = e => {
     e.preventDefault();
     const name = this.refs.inputItem.value;
     // console.log(name);
     this.props.parentCallback(name);
+    e.target.reset();
   };
 
   render() {
@@ -127,23 +147,24 @@ class TodoCardHeader extends Component {
             ref="inputItem"
             type="text"
             className="form-control"
-            placeholder="Recipient's username"
+            placeholder="new task name..."
           />
           <div className="input-group-append">
             <button className="btn btn-outline-secondary" type="submit">
-              Button
+              Submit
             </button>
           </div>
         </form>
         <div className="row">
           <div className="col">
             <button type="button" className="btn btn-secondary">
-              ongoing <span className="badge badge-light">4</span>
+              ongoing{" "}
+              <span className="badge badge-light">{this.props.undone}</span>
             </button>
           </div>
           <div className="col">
             <button type="button" className="btn btn-success">
-              done <span className="badge badge-light">4</span>
+              done <span className="badge badge-light">{this.props.done}</span>
             </button>
           </div>
         </div>
@@ -152,11 +173,21 @@ class TodoCardHeader extends Component {
   }
 }
 class TodoListBody extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoItems: this.props.todoItems
+    };
+  }
   render() {
+    var todoItems = this.state.todoItems.map(item => (
+      <TodoItem key={item.id} checked={item.checked}>
+        {item.msg}
+      </TodoItem>
+    ));
+
     return (
-      <div className="card-body list-group list-group-flush">
-        {/* {this.props.todoItems} */}
-      </div>
+      <div className="card-body list-group list-group-flush">{todoItems}</div>
     );
   }
 }
