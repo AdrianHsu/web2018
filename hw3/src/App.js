@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import logo from "./logo.svg";
+import editIcon from "./edit.png";
 import "./App.css";
 
 // https://stackoverflow.com/questions/48622893/how-to-make-bootstrap-4-card-deck-with-fixed-width-cards
@@ -9,21 +10,27 @@ class App extends Component {
     return (
       <div className="App container-fluid">
         <GlobalHeader />
-
         <InputBoxCard />
-        <div className="row justify-content-center">
-          <TodoCard />
-          <TodoCard />
-          <TodoCard />
-          <TodoCard />
-          <TodoCard />
-          <TodoCard />
-        </div>
+        <TodoBoard />
       </div>
     );
   }
 }
-
+class TodoBoard extends Component {
+  render() {
+    // 原本想使用 card-group 或是 card-deck，但不支援 rwd 所以改用 row
+    return (
+      <div className="row justify-content-center">
+        <TodoCard />
+        <TodoCard />
+        <TodoCard />
+        <TodoCard />
+        <TodoCard />
+        <TodoCard />
+      </div>
+    );
+  }
+}
 class GlobalHeader extends Component {
   render() {
     return (
@@ -31,7 +38,7 @@ class GlobalHeader extends Component {
         <div className="align-self-center mr-3">
           <ReactLogo />
         </div>
-        <h1 class="mt-3">React 待辦事項</h1>
+        <h1 className="mt-3">React 待辦事項</h1>
 
         <div className="media-body">
           <button type="button" className="btn btn-success mt-4 float-right">
@@ -58,7 +65,7 @@ class InputBoxCard extends Component {
         />
         <div className="input-group-append">
           <button className="btn btn-outline-secondary" type="button">
-            Button
+            Create
           </button>
         </div>
       </div>
@@ -84,10 +91,14 @@ class TodoCardHeader extends Component {
       <div className="card-header">
         <h3 className="card-title">
           School Homework
-          <button type="button" className="close" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+          <label className="btn">
+            <img src={editIcon} alt="edit" />
+          </label>
+          <button type="button" className="close">
+            <span>&times;</span>
           </button>
         </h3>
+
         <div className="input-group mb-3">
           <input
             type="text"
@@ -103,14 +114,14 @@ class TodoCardHeader extends Component {
           </div>
         </div>
         <div className="row">
-          <div className="col-sm-3">
-            <button type="button" className="btn btn-secondary">
-              done <span className="badge badge-light">4</span>
-            </button>
-          </div>
-          <div className="col-sm-3">
+          <div className="col">
             <button type="button" className="btn btn-secondary">
               ongoing <span className="badge badge-light">4</span>
+            </button>
+          </div>
+          <div className="col">
+            <button type="button" className="btn btn-success">
+              done <span className="badge badge-light">4</span>
             </button>
           </div>
         </div>
@@ -124,7 +135,7 @@ class TodoListBody extends Component {
       <div className="card-body list-group list-group-flush">
         <TodoItem text="MLDS hw1" />
         <TodoItem text="Web hw3" />
-        <TodoItem text="0bj903jb09jb90" />
+        <TodoItem text="NASA hw4" />
       </div>
     );
   }
