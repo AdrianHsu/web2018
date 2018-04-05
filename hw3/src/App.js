@@ -91,15 +91,32 @@ class TodoCard extends Component {
     console.log(name);
     const { todoItems } = this.state;
 
-    this.setState({ newTitle: name });
-    this.setState({ undone: this.state.undone + 1 });
-    this.setState({ keyNum: this.state.keyNum + 1 });
+    // to prevent from async => call a function after the state value has updated
+    this.setState({
+      newTitle: name,
+      undone: this.state.undone + 1,
+      keyNum: this.state.keyNum + 1
+    });
     todoItems.push({
       key: "id" + this.state.keyNum,
       checked: false,
       msg: name
     });
     this.setState({ todoItems });
+  };
+
+  summaryCallback = bool => {
+    if (bool) {
+      this.setState({
+        undone: this.state.undone - 1,
+        done: this.state.done + 1
+      });
+    } else {
+      this.setState({
+        undone: this.state.undone + 1,
+        done: this.state.done - 1
+      });
+    }
   };
 
   render() {
@@ -113,8 +130,7 @@ class TodoCard extends Component {
           />
           <TodoListBody
             todoItems={this.state.todoItems}
-            undone={this.state.undone}
-            done={this.state.done}
+            parentCallback={this.summaryCallback}
           />
         </div>
       </div>
@@ -177,21 +193,16 @@ class TodoCardHeader extends Component {
   }
 }
 class TodoListBody extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      undone: this.props.undone,
-      done: this.props.done,
-      todoItems: this.props.todoItems
-    };
-  }
+  summaryCallback = bool => {
+    this.props.parentCallback(bool);
+  };
+
   render() {
-    var todoItems = this.state.todoItems.map(item => (
+    var todoItems = this.props.todoItems.map(item => (
       <TodoItem
         key={item.key}
         checked={item.checked}
-        undone={this.state.undone}
-        done={this.state.done}
+        parentCallback={this.summaryCallback}
       >
         {item.msg}
       </TodoItem>
@@ -207,21 +218,35 @@ class TodoItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      key: this.props.key,
-      checked: this.props.checked
+      checked: this.props.checked,
+      myclass: "list-group-item list-group-item-action",
+      text: this.props.children
     };
   }
   update = e => {
-    this.setState({ checked: !this.state.checked });
-    // console.log(this.state.checked);
+    this.setState({ checked: !this.state.checked }, () => {
+      var c = this.state.checked;
+      if (c) {
+        this.setState({
+          myclass: "list-group-item list-group-item-success",
+          text: <s>{this.props.children}</s>
+        });
+      } else {
+        this.setState({
+          myclass: "list-group-item list-group-item-action",
+          text: this.props.children
+        });
+      }
+      this.props.parentCallback(c);
+    });
   };
+
   render() {
+    var style = this.state.myclass;
+    // console.log(style);
     return (
-      <button
-        className="list-group-item list-group-item-action"
-        onClick={this.update}
-      >
-        {this.props.children}
+      <button className={style} onClick={this.update}>
+        {this.state.text}
         <button type="button" className="close">
           <span>&times;</span>
         </button>
