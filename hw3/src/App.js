@@ -22,11 +22,11 @@ class TodoBoard extends Component {
     return (
       <div className="row justify-content-center">
         <TodoCard />
+        {/* <TodoCard />
         <TodoCard />
         <TodoCard />
         <TodoCard />
-        <TodoCard />
-        <TodoCard />
+        <TodoCard /> */}
       </div>
     );
   }
@@ -38,7 +38,7 @@ class GlobalHeader extends Component {
         <div className="align-self-center mr-3">
           <ReactLogo />
         </div>
-        <h1 className="mt-3">React 待辦事項</h1>
+        <h1 className="mt-3">React To-do List</h1>
 
         <div className="media-body">
           <button type="button" className="btn btn-success mt-4 float-right">
@@ -60,8 +60,6 @@ class InputBoxCard extends Component {
           type="text"
           className="form-control"
           placeholder="Recipient's username"
-          aria-label="Recipient's username"
-          aria-describedby="basic-addon2"
         />
         <div className="input-group-append">
           <button className="btn btn-outline-secondary" type="button">
@@ -75,11 +73,16 @@ class InputBoxCard extends Component {
 
 class TodoCard extends Component {
   render() {
+    var todoItems = [
+      { id: 1, data: "MLDS hw1" },
+      { id: 2, data: "Web hw3" },
+      { id: 3, data: "NASA hw4" }
+    ];
     return (
       <div className="col-auto mb-3">
         <div className="card" style={{ width: 37 + "rem" }}>
           <TodoCardHeader />
-          <TodoListBody />
+          <TodoListBody items={todoItems} />
         </div>
       </div>
     );
@@ -104,8 +107,6 @@ class TodoCardHeader extends Component {
             type="text"
             className="form-control"
             placeholder="Recipient's username"
-            aria-label="Recipient's username"
-            aria-describedby="basic-addon2"
           />
           <div className="input-group-append">
             <button className="btn btn-outline-secondary" type="button">
@@ -131,11 +132,13 @@ class TodoCardHeader extends Component {
 }
 class TodoListBody extends Component {
   render() {
+    var displayItems = this.props.items.map(item => {
+      // data 傳進去就變成 props.children
+      return <TodoItem key={item.id}>{item.data}</TodoItem>;
+    });
     return (
       <div className="card-body list-group list-group-flush">
-        <TodoItem text="MLDS hw1" />
-        <TodoItem text="Web hw3" />
-        <TodoItem text="NASA hw4" />
+        {displayItems}
       </div>
     );
   }
@@ -145,7 +148,7 @@ class TodoItem extends Component {
   render() {
     return (
       <button className="list-group-item list-group-item-action">
-        <s>{this.props.text}</s>
+        {this.props.children}
         <TodoItemDeleteBtn />
       </button>
     );
@@ -154,8 +157,8 @@ class TodoItem extends Component {
 class TodoItemDeleteBtn extends Component {
   render() {
     return (
-      <button type="button" className="close" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+      <button type="button" className="close">
+        <span>&times;</span>
       </button>
     );
   }
