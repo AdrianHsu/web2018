@@ -105,6 +105,9 @@ class TodoCard extends Component {
       alive: 0,
       done: 0,
       keyNum: 0,
+      mystyle: {
+        display: "show"
+      },
       todoItems: []
     };
   }
@@ -135,15 +138,25 @@ class TodoCard extends Component {
     });
     this.props.parentCallback(tmp, num);
   };
+  hideCallback = () => {
+    this.setState({
+      mystyle: {
+        display: "none"
+      }
+    });
+  };
 
   render() {
+    const ms = this.state.mystyle;
     return (
-      <div className="col-auto mb-3">
+      <div className="col-auto mb-3" style={ms}>
         <div className="card" style={{ width: 37 + "rem" }}>
           <TodoCardHeader
             alive={this.state.alive}
             done={this.state.done}
-            parentCallback={this.addItemCallback}
+            addItemCallback={this.addItemCallback}
+            parentCallback={this.summaryCallback}
+            hideCallback={this.hideCallback}
           />
           <TodoListBody
             todoItems={this.state.todoItems}
@@ -158,8 +171,14 @@ class TodoCardHeader extends Component {
   submitCallback = e => {
     e.preventDefault();
     const name = this.refs.inputItem.value;
-    this.props.parentCallback(name);
+    this.props.addItemCallback(name);
     e.target.reset();
+  };
+  removeAll = e => {
+    const done = -this.props.done;
+    const alive = -this.props.alive;
+    this.props.hideCallback();
+    this.props.parentCallback(alive, done);
   };
 
   render() {
@@ -170,7 +189,7 @@ class TodoCardHeader extends Component {
           <label className="btn">
             <img src={editIcon} alt="edit" />
           </label>
-          <button type="button" className="close">
+          <button type="button" className="close" onClick={this.removeAll}>
             <span>&times;</span>
           </button>
         </h3>
