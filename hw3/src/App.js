@@ -101,6 +101,7 @@ class TodoCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      myname: "School",
       newTitle: null,
       alive: 0,
       done: 0,
@@ -113,7 +114,7 @@ class TodoCard extends Component {
   }
 
   addItemCallback = name => {
-    console.log(name);
+    // console.log(name);
     const { todoItems } = this.state;
 
     // to prevent from async => call a function after the state value has updated
@@ -145,6 +146,11 @@ class TodoCard extends Component {
       }
     });
   };
+  renameCallback = n => {
+    this.setState({
+      myname: n
+    });
+  };
 
   render() {
     const ms = this.state.mystyle;
@@ -154,9 +160,11 @@ class TodoCard extends Component {
           <TodoCardHeader
             alive={this.state.alive}
             done={this.state.done}
+            myname={this.state.myname}
             addItemCallback={this.addItemCallback}
             parentCallback={this.summaryCallback}
             hideCallback={this.hideCallback}
+            renameCallback={this.renameCallback}
           />
           <TodoListBody
             todoItems={this.state.todoItems}
@@ -180,13 +188,18 @@ class TodoCardHeader extends Component {
     this.props.hideCallback();
     this.props.parentCallback(alive, done);
   };
+  renameCallback = e => {
+    var t = "";
+    t = prompt("Please enter title", this.props.myname);
+    this.props.renameCallback(t);
+  };
 
   render() {
     return (
       <div className="card-header">
         <h3 className="card-title">
-          School Homework
-          <label className="btn">
+          {this.props.myname}
+          <label className="btn" onClick={this.renameCallback}>
             <img src={editIcon} alt="edit" />
           </label>
           <button type="button" className="close" onClick={this.removeAll}>
