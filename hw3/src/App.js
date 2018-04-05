@@ -9,7 +9,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      totalAlive: 6,
+      totalAlive: 0,
       totalDone: 0
     };
   }
@@ -102,14 +102,10 @@ class TodoCard extends Component {
     super(props);
     this.state = {
       newTitle: null,
-      alive: 3,
+      alive: 0,
       done: 0,
-      keyNum: 3,
-      todoItems: [
-        { key: "id" + 1, checked: -1, msg: "dinner" },
-        { key: "id" + 2, checked: -1, msg: "jogging" },
-        { key: "id" + 3, checked: -1, msg: "sleep" }
-      ]
+      keyNum: 0,
+      todoItems: []
     };
   }
 
@@ -134,7 +130,8 @@ class TodoCard extends Component {
 
   summaryCallback = (tmp, num) => {
     this.setState({
-      done: this.state.done + num
+      done: this.state.done + num,
+      alive: this.state.alive + tmp
     });
     this.props.parentCallback(tmp, num);
   };
@@ -241,6 +238,9 @@ class TodoItem extends Component {
     this.state = {
       checked: this.props.checked,
       myclass: "list-group-item list-group-item-action",
+      mystyle: {
+        display: "show"
+      },
       text: this.props.children
     };
   }
@@ -249,7 +249,8 @@ class TodoItem extends Component {
       var c = this.state.checked;
       if (c === 1) {
         this.setState({
-          myclass: "list-group-item list-group-item-success",
+          myclass:
+            "list-group-item list-group-item-action list-group-item-success",
           text: <s>{this.props.children}</s>
         });
       } else {
@@ -262,16 +263,37 @@ class TodoItem extends Component {
     });
   };
 
+  removeOne = e => {
+    // 不管怎樣先把他變成 ongoing
+    this.setState(
+      {
+        mystyle: {
+          display: "none"
+        }
+      },
+      () => {
+        var c = this.state.checked === 1 ? -1 : 0;
+        this.props.parentCallback(-1, c);
+      }
+    );
+  };
+
   render() {
-    var style = this.state.myclass;
-    // console.log(style);
+    const mc = this.state.myclass;
+    const ms = this.state.mystyle;
     return (
-      <button className={style} onClick={this.update}>
-        {this.state.text}
-        <button type="button" className="close">
-          <span>&times;</span>
-        </button>
-      </button>
+      <div className="row" style={ms}>
+        <div className="col">
+          <button className={mc} onClick={this.update}>
+            {this.state.text}
+          </button>
+        </div>
+        <div className="col-lg-1">
+          <button type="button" className="close" onClick={this.removeOne}>
+            <span>&times;</span>
+          </button>
+        </div>
+      </div>
     );
   }
 }
