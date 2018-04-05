@@ -6,6 +6,13 @@ import "./App.css";
 // https://stackoverflow.com/questions/48622893/how-to-make-bootstrap-4-card-deck-with-fixed-width-cards
 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      totalAlive: 3,
+      totalDone: 0
+    };
+  }
   render() {
     return (
       <div className="App container-fluid">
@@ -76,7 +83,7 @@ class TodoCard extends Component {
     super(props);
     this.state = {
       newTitle: null,
-      undone: 3,
+      alive: 3,
       done: 0,
       keyNum: 3,
       todoItems: [
@@ -94,7 +101,7 @@ class TodoCard extends Component {
     // to prevent from async => call a function after the state value has updated
     this.setState({
       newTitle: name,
-      undone: this.state.undone + 1,
+      alive: this.state.alive + 1,
       keyNum: this.state.keyNum + 1
     });
     todoItems.push({
@@ -108,12 +115,10 @@ class TodoCard extends Component {
   summaryCallback = bool => {
     if (bool) {
       this.setState({
-        undone: this.state.undone - 1,
         done: this.state.done + 1
       });
     } else {
       this.setState({
-        undone: this.state.undone + 1,
         done: this.state.done - 1
       });
     }
@@ -124,7 +129,7 @@ class TodoCard extends Component {
       <div className="col-auto mb-3">
         <div className="card" style={{ width: 37 + "rem" }}>
           <TodoCardHeader
-            undone={this.state.undone}
+            alive={this.state.alive}
             done={this.state.done}
             parentCallback={this.addItemCallback}
           />
@@ -179,7 +184,9 @@ class TodoCardHeader extends Component {
           <div className="col">
             <button type="button" className="btn btn-secondary">
               ongoing{" "}
-              <span className="badge badge-light">{this.props.undone}</span>
+              <span className="badge badge-light">
+                {this.props.alive - this.props.done}
+              </span>
             </button>
           </div>
           <div className="col">
