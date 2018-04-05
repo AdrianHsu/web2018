@@ -72,23 +72,40 @@ class InputBoxCard extends Component {
 }
 
 class TodoCard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      newTitle: null
+    };
+  }
+
+  updateCallback = name => {
+    console.log(name);
+    this.setState({ newTitle: name });
+  };
+
   render() {
-    var todoItems = [
-      { id: 1, data: "MLDS hw1" },
-      { id: 2, data: "Web hw3" },
-      { id: 3, data: "NASA hw4" }
-    ];
     return (
       <div className="col-auto mb-3">
         <div className="card" style={{ width: 37 + "rem" }}>
-          <TodoCardHeader />
-          <TodoListBody items={todoItems} />
+          <TodoCardHeader parentCallback={this.updateCallback} />
+          <TodoListBody />
         </div>
       </div>
     );
   }
 }
 class TodoCardHeader extends Component {
+  constructor(props) {
+    super(props);
+  }
+  submitCallback = e => {
+    e.preventDefault();
+    const name = this.refs.inputItem.value;
+    // console.log(name);
+    this.props.parentCallback(name);
+  };
+
   render() {
     return (
       <div className="card-header">
@@ -102,18 +119,22 @@ class TodoCardHeader extends Component {
           </button>
         </h3>
 
-        <div className="input-group mb-3">
+        <form
+          className="input-group mb-3"
+          onSubmit={e => this.submitCallback(e)}
+        >
           <input
+            ref="inputItem"
             type="text"
             className="form-control"
             placeholder="Recipient's username"
           />
           <div className="input-group-append">
-            <button className="btn btn-outline-secondary" type="button">
+            <button className="btn btn-outline-secondary" type="submit">
               Button
             </button>
           </div>
-        </div>
+        </form>
         <div className="row">
           <div className="col">
             <button type="button" className="btn btn-secondary">
@@ -132,13 +153,9 @@ class TodoCardHeader extends Component {
 }
 class TodoListBody extends Component {
   render() {
-    var displayItems = this.props.items.map(item => {
-      // data 傳進去就變成 props.children
-      return <TodoItem key={item.id}>{item.data}</TodoItem>;
-    });
     return (
       <div className="card-body list-group list-group-flush">
-        {displayItems}
+        {/* {this.props.todoItems} */}
       </div>
     );
   }
@@ -149,16 +166,9 @@ class TodoItem extends Component {
     return (
       <button className="list-group-item list-group-item-action">
         {this.props.children}
-        <TodoItemDeleteBtn />
-      </button>
-    );
-  }
-}
-class TodoItemDeleteBtn extends Component {
-  render() {
-    return (
-      <button type="button" className="close">
-        <span>&times;</span>
+        <button type="button" className="close">
+          <span>&times;</span>
+        </button>
       </button>
     );
   }
