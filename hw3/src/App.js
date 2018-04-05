@@ -93,13 +93,13 @@ class TodoCard extends Component {
 
     this.setState({ newTitle: name });
     this.setState({ undone: this.state.undone + 1 });
-    this.setState({ todoItems });
     this.setState({ keyNum: this.state.keyNum + 1 });
     todoItems.push({
       key: "id" + this.state.keyNum,
       checked: false,
       msg: name
     });
+    this.setState({ todoItems });
   };
 
   render() {
@@ -111,7 +111,11 @@ class TodoCard extends Component {
             done={this.state.done}
             parentCallback={this.addItemCallback}
           />
-          <TodoListBody todoItems={this.state.todoItems} />
+          <TodoListBody
+            todoItems={this.state.todoItems}
+            undone={this.state.undone}
+            done={this.state.done}
+          />
         </div>
       </div>
     );
@@ -176,12 +180,19 @@ class TodoListBody extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      undone: this.props.undone,
+      done: this.props.done,
       todoItems: this.props.todoItems
     };
   }
   render() {
     var todoItems = this.state.todoItems.map(item => (
-      <TodoItem key={item.id} checked={item.checked}>
+      <TodoItem
+        key={item.key}
+        checked={item.checked}
+        undone={this.state.undone}
+        done={this.state.done}
+      >
         {item.msg}
       </TodoItem>
     ));
@@ -193,9 +204,23 @@ class TodoListBody extends Component {
 }
 
 class TodoItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      key: this.props.key,
+      checked: this.props.checked
+    };
+  }
+  update = e => {
+    this.setState({ checked: !this.state.checked });
+    // console.log(this.state.checked);
+  };
   render() {
     return (
-      <button className="list-group-item list-group-item-action">
+      <button
+        className="list-group-item list-group-item-action"
+        onClick={this.update}
+      >
         {this.props.children}
         <button type="button" className="close">
           <span>&times;</span>
