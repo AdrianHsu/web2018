@@ -10,7 +10,9 @@ class App extends Component {
     super();
     this.state = {
       totalAlive: 0,
-      totalDone: 0
+      totalDone: 0,
+      keyNum: 0,
+      todoCards: []
     };
   }
   summaryCallback = (tmp, num) => {
@@ -19,6 +21,20 @@ class App extends Component {
       totalAlive: this.state.totalAlive + tmp
     });
   };
+  addItemCallback = name => {
+    // console.log(name);
+    const { todoCards } = this.state;
+
+    // to prevent from async => call a function after the state value has updated
+    this.setState({
+      keyNum: this.state.keyNum + 1
+    });
+    todoCards.push({
+      key: "id" + this.state.keyNum,
+      msg: name
+    });
+    this.setState({ todoCards });
+  };
   render() {
     return (
       <div className="App container-fluid">
@@ -26,8 +42,11 @@ class App extends Component {
           totalAlive={this.state.totalAlive}
           totalDone={this.state.totalDone}
         />
-        <InputBoxCard />
-        <TodoBoard parentCallback={this.summaryCallback} />
+        <InputBoxCard addItemCallback={this.addItemCallback} />
+        <TodoBoard
+          parentCallback={this.summaryCallback}
+          todoCards={this.state.todoCards}
+        />
       </div>
     );
   }
@@ -38,19 +57,13 @@ class TodoBoard extends Component {
   };
 
   render() {
+    var todoCards = this.props.todoCards.map(item => (
+      <TodoCard key={item.key} parentCallback={this.summaryCallback}>
+        {item.msg}
+      </TodoCard>
+    ));
     // 原本想使用 card-group 或是 card-deck，但不支援 rwd 所以改用 row
-    return (
-      <div className="row justify-content-center">
-        <TodoCard parentCallback={this.summaryCallback} />
-        <TodoCard parentCallback={this.summaryCallback} />
-
-        {/* <TodoCard />
-        <TodoCard />
-        <TodoCard />
-        <TodoCard />
-        <TodoCard /> */}
-      </div>
-    );
+    return <div className="row justify-content-center">{todoCards}</div>;
   }
 }
 class GlobalHeader extends Component {
@@ -79,20 +92,27 @@ class GlobalHeader extends Component {
   }
 }
 class InputBoxCard extends Component {
+  submitCallback = e => {
+    e.preventDefault();
+    const name = this.refs.inputItem.value;
+    this.props.addItemCallback(name);
+    e.target.reset();
+  };
   render() {
     return (
-      <div className="input-group mb-3">
+      <form className="input-group mb-3" onSubmit={e => this.submitCallback(e)}>
         <input
+          ref="inputItem"
           type="text"
           className="form-control"
           placeholder="new list's title..."
         />
         <div className="input-group-append">
-          <button className="btn btn-outline-secondary" type="button">
+          <button className="btn btn-outline-secondary" type="submit">
             Create
           </button>
         </div>
-      </div>
+      </form>
     );
   }
 }
@@ -101,7 +121,7 @@ class TodoCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      myname: "School",
+      myname: this.props.children,
       newTitle: null,
       alive: 0,
       done: 0,
@@ -296,7 +316,6 @@ class TodoItem extends Component {
   };
 
   removeOne = e => {
-    // 不管怎樣先把他變成 ongoing
     this.setState(
       {
         mystyle: {
