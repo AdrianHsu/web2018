@@ -3,8 +3,12 @@ import editIcon from "./img/edit.png";
 
 class TodoCardHeader extends Component {
   submitCallback = e => {
-    e.preventDefault();
     const name = this.refs.inputItem.value;
+    if (name.length === 0) {
+      alert("string length must > 0");
+      return;
+    }
+    e.preventDefault();
     this.props.addItemCallback(name);
     e.target.reset();
   };
@@ -17,6 +21,9 @@ class TodoCardHeader extends Component {
   renameCallback = e => {
     var t = "";
     t = prompt("Please enter title", this.props.myname);
+    if (t.length === 0) {
+      return;
+    }
     this.props.renameCallback(t);
   };
 

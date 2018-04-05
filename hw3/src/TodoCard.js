@@ -22,7 +22,6 @@ class TodoCard extends Component {
     // console.log(name);
     const { todoItems } = this.state;
 
-    // to prevent from async => call a function after the state value has updated
     this.setState({
       newTitle: name,
       alive: this.state.alive + 1,

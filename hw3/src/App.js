@@ -25,7 +25,6 @@ class App extends Component {
     // console.log(name);
     const { todoCards } = this.state;
 
-    // to prevent from async => call a function after the state value has updated
     this.setState({
       keyNum: this.state.keyNum + 1
     });
