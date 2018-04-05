@@ -2,12 +2,12 @@ import React, { Component } from "react";
 
 class InputBoxCard extends Component {
   submitCallback = e => {
+    e.preventDefault();
     const name = this.refs.inputItem.value;
     if (name.length === 0) {
       alert("string length must > 0");
       return;
     }
-    e.preventDefault();
     this.props.addItemCallback(name);
     e.target.reset();
   };
